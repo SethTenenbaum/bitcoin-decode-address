@@ -2,6 +2,7 @@
 import { base58 } from '@scure/base';
 import { sha256 } from '@noble/hashes/sha2';
 import { bech32m, bech32 } from '@scure/base'; // Import Bech32m and Bech32 encoders
+import { createHash } from 'crypto'; // Import createHash from the crypto module
 
 // TypeScript typedefs
 type ScriptPubKey = Buffer; // A Bitcoin scriptPubKey is represented as a Buffer
@@ -99,10 +100,11 @@ const decodeScriptPubKey = (scriptPubKey: ScriptPubKey): BitcoinAddress => {
     else if (scriptPubKey.length >= 35 && scriptPubKey[0] === 0x41 && scriptPubKey[scriptPubKey.length - 1] === 0xac) {
         console.log("Detected P2PK format");
         const publicKey = scriptPubKey.subarray(1, scriptPubKey.length - 1); // Extract the public key
-        publicKeyHash = Buffer.from(sha256(publicKey)).subarray(0, 20); // Hash the public key
-        versionByte = 0x00; // Version byte for P2PKH (treated as P2PKH for address generation)
-        const versionedPayload = Buffer.concat([Buffer.from([versionByte]), publicKeyHash]);
-        address = base58CheckEncode(versionedPayload);
+        const publicKeyHash = sha256(publicKey); // Hash the public key using SHA-256
+        const ripemd160Hash = Buffer.from(createHash('ripemd160').update(publicKeyHash).digest()); // Apply RIPEMD-160
+        const versionByte = 0x00; // Version byte for P2PKH (treated as P2PKH for address generation)
+        const versionedPayload = Buffer.concat([Buffer.from([versionByte]), ripemd160Hash]);
+        address = base58CheckEncode(versionedPayload); // Encode using Base58Check
     }
     // Check if the scriptPubKey is P2TR (Taproot)
     else if (scriptPubKey.length === 34 && scriptPubKey[0] === 0x51 && scriptPubKey[1] === 0x20) {
