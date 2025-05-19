@@ -1,7 +1,7 @@
 // Import required methods
 import { base58 } from '@scure/base';
 import { sha256 } from '@noble/hashes/sha2';
-import { bech32m } from '@scure/base'; // Import Bech32m encoder
+import { bech32m, bech32 } from '@scure/base'; // Import Bech32m and Bech32 encoders
 /**
  * Base58Check encode function with checksum calculation
  * @param payload - The payload to encode
@@ -101,6 +101,20 @@ const decodeScriptPubKey = (scriptPubKey) => {
         // Convert publicKeyHash (8-bit values) to 5-bit values
         const data = [witnessVersion].concat(convertBits(Array.from(publicKeyHash), 8, 5, true));
         address = bech32mEncode(hrp, data);
+    }
+    // Check if the scriptPubKey is P2WPKH or P2WSH (SegWit v0)
+    else if (scriptPubKey.length === 22 && // Ensure the length matches a P2WPKH scriptPubKey
+        scriptPubKey[0] === 0x00 && // Witness version 0
+        scriptPubKey[1] === 0x14 // 20-byte public key hash
+    ) {
+        console.log("Detected P2WPKH format");
+        console.log("scriptPubKey:", scriptPubKey.toString("hex")); // Debug log
+        const witnessVersion = 0; // SegWit v0
+        const hrp = "bc"; // Human-readable part for mainnet (use "tb" for testnet)
+        publicKeyHash = scriptPubKey.subarray(2, 22); // Extract the 20-byte public key hash
+        // Convert publicKeyHash (8-bit values) to 5-bit values
+        const data = [witnessVersion].concat(convertBits(Array.from(publicKeyHash), 8, 5, true));
+        address = bech32.encode(hrp, data); // Use Bech32 for SegWit v0
     }
     else {
         throw new Error("Unsupported scriptPubKey format");
