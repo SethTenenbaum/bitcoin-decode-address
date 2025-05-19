@@ -1,0 +1,20 @@
+{
+  "name": "bitcoin-decode-address",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/extract.js"
+  },
+  "dependencies": {
+    "@noble/hashes": "1.8.0",
+    "@noble/secp256k1": "2.2.3",
+    "@scure/base": "^1.2.5",
+    "@scure/bip32": "^1.7.0",
+    "@scure/bip39": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.19",
+    "typescript": "^5.0.0"
+  }
+}

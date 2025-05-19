@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext", // Use Node.js-style ES Modules
+    "moduleResolution": "NodeNext", // Resolve modules in Node.js style
+    "target": "ES2020", // Target modern JavaScript
+    "rootDir": "./src", // Specify the root directory of your TypeScript files
+    "outDir": "./dist", // Specify the output directory for compiled JavaScript files
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Enable compatibility with CommonJS modules
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in imports
+    "skipLibCheck": true // Skip type checking for declaration files
+  },
+  "include": ["src/**/*"], // Include all TypeScript files in the src directory
+  "exclude": ["node_modules"] // Exclude node_modules from compilation
+}
