@@ -1,4 +1,4 @@
-# Extract Bitcoin Address
+# Bitcoin Decode Address
 
 The `extract` util is a utility for decoding and extracting information from Bitcoin addresses. It is designed to help developers analyze Bitcoin addresses and retrieve useful metadata such as address type and validity.
 
