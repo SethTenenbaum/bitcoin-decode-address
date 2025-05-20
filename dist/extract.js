@@ -118,6 +118,13 @@ const decodeScriptPubKey = (scriptPubKey) => {
         const data = [witnessVersion].concat(convertBits(Array.from(publicKeyHash), 8, 5, true));
         address = bech32.encode(hrp, data); // Use Bech32 for SegWit v0
     }
+    // Check if the scriptPubKey is OP_RETURN
+    else if (scriptPubKey.length >= 2 && scriptPubKey[0] === 0x6a) {
+        console.log("Detected OP_RETURN format");
+        const dataLength = scriptPubKey[1]; // Length of the embedded data
+        const embeddedData = scriptPubKey.subarray(2, 2 + dataLength); // Extract the embedded data
+        address = `OP_RETURN: ${embeddedData.toString("hex")}`; // Return the embedded data as a hex string
+    }
     else {
         throw new Error("Unsupported scriptPubKey format");
     }
