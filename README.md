@@ -37,7 +37,7 @@ npx ts-node extract.ts 4104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e
 Output:
 ```
 Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
-Type: P2PKH
+Type: P2PK
 Valid: true
 ```
 
