@@ -118,17 +118,16 @@ const decodeScriptPubKey = (scriptPubKey: ScriptPubKey): BitcoinAddress => {
         address = bech32mEncode(hrp, data);
     }
     // Check if the scriptPubKey is P2WPKH or P2WSH (SegWit v0)
+   // Check if the scriptPubKey is P2WSH (SegWit v0)
     else if (
-        scriptPubKey.length === 22 && // Ensure the length matches a P2WPKH scriptPubKey
+        scriptPubKey.length === 34 && // Ensure the length matches a P2WSH scriptPubKey
         scriptPubKey[0] === 0x00 &&  // Witness version 0
-        scriptPubKey[1] === 0x14     // 20-byte public key hash
+        scriptPubKey[1] === 0x20     // 32-byte script hash
     ) {
-        console.log("Detected P2WPKH format");
-        console.log("scriptPubKey:", scriptPubKey.toString("hex")); // Debug log
-
+        console.log("Detected P2WSH format");
         const witnessVersion = 0; // SegWit v0
         const hrp = "bc"; // Human-readable part for mainnet (use "tb" for testnet)
-        publicKeyHash = scriptPubKey.subarray(2, 22); // Extract the 20-byte public key hash
+        publicKeyHash = scriptPubKey.subarray(2, 34); // Extract the 32-byte script hash
 
         // Convert publicKeyHash (8-bit values) to 5-bit values
         const data = [witnessVersion].concat(
