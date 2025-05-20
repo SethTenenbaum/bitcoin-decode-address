@@ -125,6 +125,19 @@ const decodeScriptPubKey = (scriptPubKey) => {
         const embeddedData = scriptPubKey.subarray(2, 2 + dataLength); // Extract the embedded data
         address = `OP_RETURN: ${embeddedData.toString("hex")}`; // Return the embedded data as a hex string
     }
+    // Check if the scriptPubKey is P2WPKH (SegWit v0)
+    else if (scriptPubKey.length === 22 && // Ensure the length matches a P2WPKH scriptPubKey
+        scriptPubKey[0] === 0x00 && // Witness version 0
+        scriptPubKey[1] === 0x14 // 20-byte public key hash
+    ) {
+        console.log("Detected P2WPKH format");
+        const witnessVersion = 0; // SegWit v0
+        const hrp = "bc"; // Human-readable part for mainnet (use "tb" for testnet)
+        publicKeyHash = scriptPubKey.subarray(2, 22); // Extract the 20-byte public key hash
+        // Convert publicKeyHash (8-bit values) to 5-bit values
+        const data = [witnessVersion].concat(convertBits(Array.from(publicKeyHash), 8, 5, true));
+        address = bech32.encode(hrp, data); // Use Bech32 for SegWit v0
+    }
     else {
         throw new Error("Unsupported scriptPubKey format");
     }
